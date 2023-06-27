@@ -1,21 +1,21 @@
-import type { Component, ComponentProps } from "solid-js"
-import { splitProps } from "solid-js"
+import type { Component, ComponentProps } from "solid-js";
+import { splitProps } from "solid-js";
 
-import { DropdownMenu as DropdownMenuPrimitive } from "@kobalte/core"
+import { DropdownMenu as DropdownMenuPrimitive } from "@kobalte/core";
 
-import { cn } from "~/lib/utils"
-import { FaRegularCircle, FaSolidChevronRight, FaSolidCheck } from "solid-icons/fa"
+import { cn } from "~/lib/utils";
+import { FaRegularCircle, FaSolidChevronRight, FaSolidCheck } from "solid-icons/fa";
 
 const DropdownMenu: Component<DropdownMenuPrimitive.DropdownMenuRootProps> = (props) => {
-    return <DropdownMenuPrimitive.Root gutter={4} {...props} />
-}
+    return <DropdownMenuPrimitive.Root gutter={4} {...props} />;
+};
 
-const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
+const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 
-const DropdownMenuPortal = DropdownMenuPrimitive.Portal
+const DropdownMenuPortal = DropdownMenuPrimitive.Portal;
 
 const DropdownMenuContent: Component<DropdownMenuPrimitive.DropdownMenuContentProps> = (props) => {
-    const [, rest] = splitProps(props, ["class"])
+    const [, rest] = splitProps(props, ["class"]);
     return (
         <DropdownMenuPrimitive.Portal>
             <DropdownMenuPrimitive.Content
@@ -26,11 +26,11 @@ const DropdownMenuContent: Component<DropdownMenuPrimitive.DropdownMenuContentPr
                 {...rest}
             />
         </DropdownMenuPrimitive.Portal>
-    )
-}
+    );
+};
 
 const DropdownMenuItem: Component<DropdownMenuPrimitive.DropdownMenuItemProps> = (props) => {
-    const [, rest] = splitProps(props, ["class"])
+    const [, rest] = splitProps(props, ["class"]);
     return (
         <DropdownMenuPrimitive.Item
             class={cn(
@@ -39,32 +39,32 @@ const DropdownMenuItem: Component<DropdownMenuPrimitive.DropdownMenuItemProps> =
             )}
             {...rest}
         />
-    )
-}
+    );
+};
 
 const DropdownMenuShortcut: Component<ComponentProps<"span">> = (props) => {
-    const [, rest] = splitProps(props, ["class"])
-    return <span class={cn("ml-auto text-xs tracking-widest opacity-60", props.class)} {...rest} />
-}
+    const [, rest] = splitProps(props, ["class"]);
+    return <span class={cn("ml-auto text-xs tracking-widest opacity-60", props.class)} {...rest} />;
+};
 
 const DropdownMenuSeparator: Component<DropdownMenuPrimitive.DropdownMenuSeparatorProps> = (
     props
 ) => {
-    const [, rest] = splitProps(props, ["class"])
+    const [, rest] = splitProps(props, ["class"]);
     return (
         <DropdownMenuPrimitive.Separator
             class={cn("-mx-1 my-1 h-px bg-muted", props.class)}
             {...rest}
         />
-    )
-}
+    );
+};
 
-const DropdownMenuSub = DropdownMenuPrimitive.Sub
+const DropdownMenuSub = DropdownMenuPrimitive.Sub;
 
 const DropdownMenuSubTrigger: Component<DropdownMenuPrimitive.DropdownMenuSubTriggerProps> = (
     props
 ) => {
-    const [, rest] = splitProps(props, ["class", "children"])
+    const [, rest] = splitProps(props, ["class", "children"]);
     return (
         <DropdownMenuPrimitive.SubTrigger
             class={cn(
@@ -76,13 +76,13 @@ const DropdownMenuSubTrigger: Component<DropdownMenuPrimitive.DropdownMenuSubTri
             {props.children}
             <FaSolidChevronRight class="ml-auto h-4 w-4" />
         </DropdownMenuPrimitive.SubTrigger>
-    )
-}
+    );
+};
 
 const DropdownMenuSubContent: Component<DropdownMenuPrimitive.DropdownMenuSubContentProps> = (
     props
 ) => {
-    const [, rest] = splitProps(props, ["class"])
+    const [, rest] = splitProps(props, ["class"]);
     return (
         <DropdownMenuPrimitive.SubContent
             class={cn(
@@ -91,13 +91,13 @@ const DropdownMenuSubContent: Component<DropdownMenuPrimitive.DropdownMenuSubCon
             )}
             {...rest}
         />
-    )
-}
+    );
+};
 
 const DropdownMenuCheckboxItem: Component<DropdownMenuPrimitive.DropdownMenuCheckboxItemProps> = (
     props
 ) => {
-    const [, rest] = splitProps(props, ["class", "children"])
+    const [, rest] = splitProps(props, ["class", "children"]);
     return (
         <DropdownMenuPrimitive.CheckboxItem
             class={cn(
@@ -113,29 +113,29 @@ const DropdownMenuCheckboxItem: Component<DropdownMenuPrimitive.DropdownMenuChec
             </span>
             {props.children}
         </DropdownMenuPrimitive.CheckboxItem>
-    )
-}
+    );
+};
 
-const DropdownMenuGroup = DropdownMenuPrimitive.Group
+const DropdownMenuGroup = DropdownMenuPrimitive.Group;
 
 const DropdownMenuGroupLabel: Component<DropdownMenuPrimitive.DropdownMenuGroupLabelProps> = (
     props
 ) => {
-    const [, rest] = splitProps(props, ["class"])
+    const [, rest] = splitProps(props, ["class"]);
     return (
         <DropdownMenuPrimitive.GroupLabel
             class={cn("px-2 py-1.5 text-sm font-semibold", props.class)}
             {...rest}
         />
-    )
-}
+    );
+};
 
-const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
+const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
 
 const DropdownMenuRadioItem: Component<DropdownMenuPrimitive.DropdownMenuRadioItemProps> = (
     props
 ) => {
-    const [, rest] = splitProps(props, ["class", "children"])
+    const [, rest] = splitProps(props, ["class", "children"]);
     return (
         <DropdownMenuPrimitive.RadioItem
             class={cn(
@@ -151,8 +151,8 @@ const DropdownMenuRadioItem: Component<DropdownMenuPrimitive.DropdownMenuRadioIt
             </span>
             {props.children}
         </DropdownMenuPrimitive.RadioItem>
-    )
-}
+    );
+};
 
 export {
     DropdownMenu,
@@ -170,4 +170,4 @@ export {
     DropdownMenuGroupLabel,
     DropdownMenuRadioGroup,
     DropdownMenuRadioItem
-}
+};
