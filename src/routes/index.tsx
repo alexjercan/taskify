@@ -6,13 +6,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress, ProgressLabel, ProgressValueLabel } from "~/components/ui/progress";
 import { Separator } from "~/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { AiOutlineStar, AiFillStar } from "solid-icons/ai";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
-import { IoRefreshOutline } from 'solid-icons/io'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuGroupLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
-import { FaSolidFilter } from 'solid-icons/fa'
 import { showToast, Toaster } from "~/components/ui/toast";
+import { ModeToggle } from "~/components/ui/mode-toggle";
+import { IoRefreshOutline, IoFilterOutline } from 'solid-icons/io'
+import { VsStarEmpty, VsStarFull } from 'solid-icons/vs'
 
 function requiredXp(level: number): number {
     return level * 100;
@@ -65,37 +65,37 @@ const tasks: Task[] = [
     {
         id: "1",
         goalId: "1",
-        title: "Go to the gym and workout",
+        title: "Go to the gym and workout for 1 hour",
         xp: 10,
     },
     {
         id: "2",
         goalId: "1",
-        title: "Eat healthy food",
+        title: "Eat healthy food for lunch",
         xp: 5,
     },
     {
         id: "3",
         goalId: "2",
-        title: "Learn JavaScript",
+        title: "Create a Web App using JavaScript",
         xp: 10,
     },
     {
         id: "4",
         goalId: "2",
-        title: "Learn TypeScript",
+        title: "Create a HTTP Server using Rust",
         xp: 5,
     },
     {
         id: "5",
         goalId: "3",
-        title: "Read Atomic Habits",
+        title: "Read one chapter of Atomic Habits",
         xp: 10,
     },
     {
         id: "6",
         goalId: "3",
-        title: "Read The Pragmatic Programmer",
+        title: "Read one chapter of The Pragmatic Programmer",
         xp: 5,
     },
 ];
@@ -144,28 +144,25 @@ function getGoal(id: string): Goal | undefined {
 
 type TaskItemProps = {
     task: Task;
-    onCompleted: (task: Task) => void;
+    completed: boolean;
+    onCompleted: () => void;
     onReset: () => void;
 };
 
 const TaskItem: VoidComponent<TaskItemProps> = (props) => {
-    const [completed, setCompleted] = createSignal(false);
-
     function setTaskCompleted(completed: boolean) {
-        setCompleted(completed);
-
         if (completed) {
-            props.onCompleted(props.task);
+            props.onCompleted();
         }
     }
 
     return (
         <Flex flexDirection="row" justifyContent="between" alignItems="center">
             <Flex flexDirection="row" justifyContent="start" alignItems="center" class="space-x-4">
-                <Checkbox id={props.task.id} checked={completed()} onChange={() => setTaskCompleted(!completed())} />
+                <Checkbox id={props.task.id} checked={props.completed} onChange={() => setTaskCompleted(!props.completed)} />
                 <Label
                 classList={{
-                    'line-through': completed()
+                    'line-through': props.completed
                 }}
                 for={props.task.id}>{props.task.title}</Label>
             </Flex>
@@ -204,7 +201,7 @@ const GoalItem: VoidComponent<GoalItemProps> = (props) => {
                     </div>
                     <div>
                         <button onClick={() => props.onFavorite()}>
-                            {props.goal.favorite ? <AiFillStar class="h-6 w-6" /> : <AiOutlineStar class="h-6 w-6" />}
+                            {props.goal.favorite ? <VsStarFull class="h-6 w-6" /> : <VsStarEmpty class="h-6 w-6" />}
                         </button>
                     </div>
                 </Flex>
@@ -246,7 +243,7 @@ const Goals: VoidComponent<GoalsProps> = (props) => {
                 <h2 class="text-2xl font-bold">Goals</h2>
                 <DropdownMenu>
                     <DropdownMenuTrigger>
-                        <FaSolidFilter class="h-6 w-6" />
+                        <IoFilterOutline class="h-6 w-6" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent class="w-48">
                         <DropdownMenuGroup>
@@ -275,7 +272,8 @@ const Goals: VoidComponent<GoalsProps> = (props) => {
 
 type TasksProps = {
     tasks: Task[];
-    onCompleted: (task: Task) => void;
+    completed: boolean[];
+    onCompleted: (index: number) => void;
     onReset: (index: number) => void;
 };
 
@@ -284,7 +282,7 @@ const Tasks: VoidComponent<TasksProps> = (props) => {
         <Flex flexDirection="row" alignItems="center" justifyContent="center">
             <Flex flexDirection="col" alignItems="start" justifyContent="start" class="w-1/2 space-y-4 p-4">
                 <For each={props.tasks}>
-                    {(_, index) => <TaskItem task={props.tasks[index()]} onCompleted={props.onCompleted} onReset={() => props.onReset(index())} />}
+                    {(_, index) => <TaskItem task={props.tasks[index()]} completed={props.completed[index()]} onCompleted={() => props.onCompleted(index())} onReset={() => props.onReset(index())} />}
                 </For>
             </Flex>
         </Flex>
@@ -293,12 +291,29 @@ const Tasks: VoidComponent<TasksProps> = (props) => {
 
 const Home: VoidComponent = () => {
     const [dailyTasks, setDailyTasks] = createSignal<string[]>(getTasks());
+    const [completed, setCompleted] = createSignal<boolean[]>(dailyTasks().map(() => false));
     const [userGoals, setUserGoals] = createSignal<Goal[]>(goals);
 
-    function completeTask(task: Task) {
+    function completeTask(index: number) {
+        const task = getTask(dailyTasks()[index])!;
+
         showToast({
             title: 'Task completed',
             description: `You have completed the task ${task.title} and gained ${task.xp} XP for ${getGoal(task.goalId)?.title}!`,
+        });
+
+        setCompleted((completed) => {
+            completed[index] = true;
+            return [...completed];
+        });
+
+        setUserGoals((goals) => {
+            const goal = getGoal(task.goalId)!;
+            goal.xp += task.xp;
+
+            const index = goals.findIndex((g) => g.id === goal.id);
+            goals[index] = goal;
+            return [...goals];
         });
     }
 
@@ -308,6 +323,11 @@ const Home: VoidComponent = () => {
         setDailyTasks((tasks) => {
             tasks[index] = newIndex;
             return [...tasks];
+        });
+
+        setCompleted((completed) => {
+            completed[index] = false;
+            return [...completed];
         });
     }
 
@@ -334,6 +354,7 @@ const Home: VoidComponent = () => {
                             <TabsTrigger value="goals">Goals</TabsTrigger>
                             <TabsTrigger value="tasks">Tasks</TabsTrigger>
                         </TabsList>
+                        <ModeToggle />
                     </Flex>
                     <Separator />
                     <TabsContent value="goals">
@@ -342,6 +363,7 @@ const Home: VoidComponent = () => {
                     <TabsContent value="tasks">
                         <Tasks
                             tasks={dailyTasks().map((id) => getTask(id)!)}
+                            completed={completed()}
                             onCompleted={completeTask}
                             onReset={resetTask}
                         />
