@@ -144,7 +144,7 @@ function getTasks(): string[] {
     return getRandomElementsWithoutDuplicates(tasks.map((task) => task.id), 3);
 }
 
-function getGoal(id: string): Goal | undefined {
+function getGoal(id: string): Goal {
     const goal = goals.find((goal) => goal.id === id);
 
     if (goal === undefined) {
